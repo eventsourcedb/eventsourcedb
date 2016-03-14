@@ -8,6 +8,8 @@ application.
 ## Status
 ALPHA-GRADE SOFTWARE. NOT FOR PRODUCTION USE (YET).
 
+[![Build Status](https://travis-ci.org/eventsourcedb/eventsourcedb.svg?branch=master)](https://travis-ci.org/eventsourcedb/eventsourcedb)
+
 ## Features
 * [ ] JSON-enabled streaming HTTP2 API.
 * [ ] Pub/Sub.
