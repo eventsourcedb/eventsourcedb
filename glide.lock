@@ -1,0 +1,12 @@
+hash: d67360611f03d7e8e1e3109908b54552aa6dfe0666feae9c50060a5f13859dcb
+updated: 2016-03-13T16:16:34.532395411+02:00
+imports:
+- name: github.com/boltdb/bolt
+  version: 0fd4c0547d204c7b1cad6db6f3adad5f2cf453e5
+- name: github.com/codegangsta/cli
+  version: aca5b047ed14d17224157c3434ea93bf6cdaadee
+- name: golang.org/x/sys
+  version: 7a56174f0086b32866ebd746a794417edbc678a1
+  subpackages:
+  - unix
+devImports: []

@@ -1,0 +1,4 @@
+package: github.com/eventsourcedb/eventsourcedb
+import:
+- package: github.com/boltdb/bolt
+- package: github.com/codegangsta/cli
