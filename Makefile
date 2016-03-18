@@ -12,4 +12,7 @@ test:
 testrace:
 	go test -x -race $(glide novendor)
 
+gen:
+	go generate $(glide novendor)
+
 .PHONY: all deps install test testrace

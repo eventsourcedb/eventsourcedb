@@ -1,3 +1,4 @@
+//go:generate ffjson $GOFILE
 package eventsourcedb
 
 import "encoding/json"
