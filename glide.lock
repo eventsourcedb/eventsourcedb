@@ -1,15 +1,13 @@
-hash: ba411c8d50325b77bdcc497a7402151aed0701db4551d7b45412a00514055af9
-updated: 2016-03-18T12:42:05.899764646+02:00
+hash: 689536eead7164b2e64fd901def121cff22ce2cb99d7c3e03d173108517204b2
+updated: 2016-03-22T10:19:48.04955+02:00
 imports:
 - name: github.com/boltdb/bolt
-  version: 0fd4c0547d204c7b1cad6db6f3adad5f2cf453e5
+  version: c6ba97b89e0454fec9aa92e1d33a4e2c5fc1f631
 - name: github.com/codegangsta/cli
   version: aca5b047ed14d17224157c3434ea93bf6cdaadee
 - name: github.com/pquerna/ffjson
-  version: 215028ffa1b291d28e4007437cbdb53a9a958a3d
+  version: 03d5a0ae3a5a5d0cd8d2b593e247bb073c25dbcb
   subpackages:
-  - shared
-  - inception
   - fflib/v1
   - fflib/v1/internal
 - name: golang.org/x/sys
