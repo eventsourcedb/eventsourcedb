@@ -5,11 +5,11 @@
 * HTTP2 JSON API
 * boltdb as a storage
 * pub/sub
+* consume events by stream
 
 ## 0.2.0
 * scan and subscribe to all events
 * consume events by type
-* consume events by stream
 * consume last N events
 * consume events starting from ID
 * consume events by time ranges
