@@ -15,7 +15,8 @@ type HubOpt func(*Hub)
 
 func NewHub(opts ...HubOpt) *Hub {
 	h := &Hub{
-		subs: make(map[Sub]struct{}),
+		subs:       make(map[Sub]struct{}),
+		subBufSize: subBufSize,
 	}
 
 	for _, o := range opts {
@@ -27,12 +28,14 @@ func NewHub(opts ...HubOpt) *Hub {
 type DB interface {
 	Insert(events ...Event) error
 	Fetch(firstID, lastID uint64) ([]Event, error)
+	Close() error
 }
 
 type Hub struct {
-	rw   sync.RWMutex
-	db   DB
-	subs map[Sub]struct{}
+	rw         sync.RWMutex
+	db         DB
+	subBufSize int
+	subs       map[Sub]struct{}
 }
 
 func (h *Hub) Pub(evts ...Event) error {
@@ -62,7 +65,7 @@ func (h *Hub) Pub(evts ...Event) error {
 
 func (h *Hub) Sub() *Sub {
 	sub := Sub{
-		Events: make(chan uint64, subBufSize),
+		Events: make(chan uint64, h.subBufSize),
 		db:     h.db,
 	}
 	h.rw.Lock()

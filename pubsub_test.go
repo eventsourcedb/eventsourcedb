@@ -24,7 +24,7 @@ func TestHub_Cancel(t *testing.T) {
 	}
 }
 
-func TestHub_Pub(t *testing.T) {
+func TestHub_Pub_errors(t *testing.T) {
 	mockDB1 := NewSimplestubDB()
 	mockDB1Opt := func(h *Hub) {
 		h.db = mockDB1
@@ -59,4 +59,23 @@ func TestHub_Pub(t *testing.T) {
 			t.Fatalf("%q is expected, got %q", tc.err, err)
 		}
 	}
+}
+
+func TestHub_Pub(t *testing.T) {
+	mockDB1 := InMemStubDB()
+	h := NewHub()
+	h.db = mockDB1
+	h.subBufSize = 2
+	s1 := h.Sub()
+	evt1 := Event{ID: 1234}
+
+	if err1 := h.Pub(evt1); err1 != nil {
+		t.Fatal(err1)
+	}
+
+	evts, err2 := s1.Next()
+	if err2 != nil {
+		t.Fatal(err2)
+	}
+	t.Log(evts)
 }
