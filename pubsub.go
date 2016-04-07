@@ -1,14 +1,14 @@
 package eventsourcedb
 
-import (
-	"errors"
-	"sync"
+import "sync"
+
+const (
+	ErrNoEventsData = Error("no events data")
+	EOS             = Error("end of stream")
 )
 
 var (
-	ErrNoEventsData = errors.New("no events data")
-	EOS             = errors.New("end of stream")
-	subBufSize      = 10
+	subBufSize = 10
 )
 
 type HubOpt func(*Hub)
