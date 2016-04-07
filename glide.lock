@@ -1,8 +1,8 @@
-hash: 689536eead7164b2e64fd901def121cff22ce2cb99d7c3e03d173108517204b2
-updated: 2016-04-07T17:11:26.250640145+03:00
+hash: ba411c8d50325b77bdcc497a7402151aed0701db4551d7b45412a00514055af9
+updated: 2016-04-07T17:56:52.137637772+03:00
 imports:
 - name: github.com/boltdb/bolt
-  version: c6ba97b89e0454fec9aa92e1d33a4e2c5fc1f631
+  version: 144418e1475d8bf7abbdc48583500f1a20c62ea7
 - name: github.com/codegangsta/cli
   version: aca5b047ed14d17224157c3434ea93bf6cdaadee
 - name: github.com/pquerna/ffjson
