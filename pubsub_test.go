@@ -2,36 +2,61 @@ package eventsourcedb
 
 import "testing"
 
-var (
-	stream1 = "topic1"
-	evt1    = Event{
-		ID:     42,
-		Stream: stream1,
-		Type:   "evt1",
-		Body:   []byte("body1"),
-	}
-)
+func TestNewHub(t *testing.T) {
+	var optCalled bool
+	NewHub(func(h *Hub) {
+		optCalled = true
+	})
 
-func TestPub(t *testing.T) {
-	store := &noopBackend{}
-
-	f := func(h *hub) {
-		h.store = store
-	}
-
-	h := newhub(f)
-	h.Pub([]byte(stream1), evt1)
-
-	if store.PersistCalled != 1 {
-		t.Error("didn't called Persist")
+	if !optCalled {
+		t.Fatal("optional function wasn't called")
 	}
 }
 
-type noopBackend struct {
-	PersistCalled int
+func TestHub_Cancel(t *testing.T) {
+	h := NewHub()
+	s1 := h.Sub()
+	go func() {
+		h.Cancel(s1)
+	}()
+	if _, err := s1.Next(); err != EOS {
+		t.Fatal(EOS, "is expected, got", err)
+	}
 }
 
-func (b *noopBackend) Persist(stream []byte, e ...Event) error {
-	b.PersistCalled += 1
-	return nil
+func TestHub_Pub(t *testing.T) {
+	mockDB1 := NewSimplestubDB()
+	mockDB1Opt := func(h *Hub) {
+		h.db = mockDB1
+	}
+
+	test_tab := []struct {
+		opts   []HubOpt
+		events []Event
+		err    error
+	}{
+		{
+			[]HubOpt{},
+			[]Event{},
+			ErrNoEventsData,
+		},
+		{
+			[]HubOpt{mockDB1Opt},
+			[]Event{},
+			ErrNoEventsData,
+		},
+		{
+			[]HubOpt{mockDB1Opt},
+			[]Event{{}},
+			nil,
+		},
+	}
+
+	for _, tc := range test_tab {
+		h := NewHub(tc.opts...)
+
+		if err := h.Pub(tc.events...); err != tc.err {
+			t.Fatalf("%q is expected, got %q", tc.err, err)
+		}
+	}
 }
