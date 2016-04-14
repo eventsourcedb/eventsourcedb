@@ -25,12 +25,6 @@ func NewHub(opts ...HubOpt) *Hub {
 	return h
 }
 
-type DB interface {
-	Insert(events ...Event) error
-	Fetch(firstID, lastID uint64) ([]Event, error)
-	Close() error
-}
-
 type Hub struct {
 	rw         sync.RWMutex
 	db         DB
