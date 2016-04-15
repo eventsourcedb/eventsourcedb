@@ -3,3 +3,6 @@ import:
 - package: github.com/boltdb/bolt
 - package: github.com/codegangsta/cli
 - package: github.com/pquerna/ffjson
+- package: golang.org/x/net
+  subpackages:
+  - context
