@@ -4,7 +4,7 @@ deps:
 	glide install
 
 install:
-	go install -v ./cmd/...
+	go install -ldflags="-s -w" -v ./cmd/...
 
 test:
 	go test $(glide novendor)
