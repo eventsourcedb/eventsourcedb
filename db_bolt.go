@@ -26,15 +26,17 @@ type BoltDB struct {
 	done context.CancelFunc
 }
 
-func (b *BoltDB) Insert(events ...Event) error {
+func (b *BoltDB) Insert(events ...Event) (uint64, error) {
 	select {
 	case <-b.ctx.Done():
-		return ErrDBClosed
+		return 0, ErrDBClosed
 	default:
 		b.wg.Add(1)
 	}
 
-	return b.db.Update(func(tx *bolt.Tx) error {
+	var lastID uint64
+
+	err := b.db.Update(func(tx *bolt.Tx) error {
 		defer b.wg.Done()
 
 		buEvents := bucket(tx, eventsName)
@@ -43,6 +45,7 @@ func (b *BoltDB) Insert(events ...Event) error {
 
 		for _, e := range events {
 			e.ID, _ = buEvents.NextSequence()
+			lastID = e.ID
 			evt_bytes, err := e.MarshalJSON()
 			if err != nil {
 				return err
@@ -70,9 +73,11 @@ func (b *BoltDB) Insert(events ...Event) error {
 		}
 		return nil
 	})
+
+	return lastID, err
 }
 
-func (b *BoltDB) Fetch(firstID, lastID uint64) ([]Event, error) {
+func (b *BoltDB) Fetch(firstID, lastID uint64) (Cursor, error) {
 	select {
 	case <-b.ctx.Done():
 		return nil, ErrDBClosed
@@ -85,23 +90,15 @@ func (b *BoltDB) Fetch(firstID, lastID uint64) ([]Event, error) {
 	max := make([]byte, 8)
 	binary.PutUvarint(min, firstID)
 	binary.PutUvarint(max, lastID)
-	result := make([]Event, 0)
 
-	b.db.View(func(tx *bolt.Tx) error {
-		c := tx.Bucket(eventsName).Cursor()
+	cur := &boltCursor{
+		next: min,
+		max:  max,
+		db:   b.db,
+		ctx:  b.ctx,
+	}
 
-		for k, v := c.Seek(min); k != nil && bytes.Compare(k, max) <= 0; k, v = c.Next() {
-			var e Event
-			if err := e.UnmarshalJSON(v); err != nil {
-				return err
-			}
-			result = append(result, e)
-		}
-
-		return nil
-	})
-
-	return result, nil
+	return cur, nil
 }
 
 func (b *BoltDB) Close() error {
@@ -147,4 +144,44 @@ func bucket(tx *bolt.Tx, name []byte) *bolt.Bucket {
 	bu := tx.Bucket(name)
 	bu.FillPercent = 0.99
 	return bu
+}
+
+type boltCursor struct {
+	next []byte
+	max  []byte
+	db   *bolt.DB
+	ctx  context.Context
+}
+
+func (c *boltCursor) Next() (Event, error) {
+	var (
+		e Event
+	)
+
+	select {
+	case <-c.ctx.Done():
+		return e, ErrDBClosed
+	default:
+	}
+
+	err1 := c.db.View(func(tx *bolt.Tx) error {
+		cur := tx.Bucket(eventsName).Cursor()
+		k, v := cur.Seek(c.next)
+
+		if k == nil || bytes.Compare(k, c.max) > 0 {
+			return EOS
+		}
+
+		if err := e.UnmarshalJSON(v); err != nil {
+			return err
+		}
+
+		next, _ := cur.Next()
+		c.next = make([]byte, len(next))
+		copy(c.next, next)
+
+		return nil
+	})
+
+	return e, err1
 }

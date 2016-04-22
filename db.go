@@ -6,7 +6,11 @@ const (
 )
 
 type DB interface {
-	Insert(events ...Event) error
-	Fetch(firstID, lastID uint64) ([]Event, error)
+	Insert(events ...Event) (uint64, error)
+	Fetch(firstID, lastID uint64) (Cursor, error)
 	Close() error
+}
+
+type Cursor interface {
+	Next() (Event, error)
 }

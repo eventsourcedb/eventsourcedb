@@ -37,15 +37,13 @@ func (h *Hub) Pub(evts ...Event) error {
 		return ErrNoEventsData
 	}
 
-	err := h.db.Insert(evts...)
+	lastID, err := h.db.Insert(evts...)
 	if err != nil {
 		return err
 	}
 
 	h.rw.RLock()
 	defer h.rw.RUnlock()
-
-	lastID := evts[len(evts)-1].ID
 
 	for s, _ := range h.subs {
 		select {
@@ -84,7 +82,7 @@ type Sub struct {
 	mu     sync.Mutex
 }
 
-func (s *Sub) Next() ([]Event, error) {
+func (s *Sub) Next() (Cursor, error) {
 	curID, ok := <-s.Events
 	if !ok {
 		return nil, EOS
