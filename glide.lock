@@ -1,21 +1,21 @@
 hash: 3e7ddb8889ec6cc14982983d369a2978719088c864cb94d7471dc99f2ac34062
-updated: 2016-04-18T16:38:04.960202386+03:00
+updated: 2016-05-19T14:48:10.261976247+03:00
 imports:
 - name: github.com/boltdb/bolt
-  version: 144418e1475d8bf7abbdc48583500f1a20c62ea7
+  version: dfb21201d9270c1082d5fb0f07f500311ff72f18
 - name: github.com/codegangsta/cli
-  version: 71f57d300dd6a780ac1856c005c4b518cfd498ec
+  version: 0eb4e0be6c214f8904ef6989b11072c7b897c657
 - name: github.com/pquerna/ffjson
-  version: 7327d038fae6927740461371efe7f330c23c3e5f
+  version: fa49a9f5832ba121db144795c147fe8449124aeb
   subpackages:
   - fflib/v1
   - fflib/v1/internal
 - name: golang.org/x/net
-  version: fb93926129b8ec0056f2f458b1f519654814edf0
+  version: 5916dcb167ed985a5b9e6871fbfd74848a4c170b
   subpackages:
   - context
 - name: golang.org/x/sys
-  version: f64b50fbea64174967a8882830d621a18ee1548e
+  version: d4feaf1a7e61e1d9e79e6c4e76c6349e9cab0a03
   subpackages:
   - unix
 devImports: []
